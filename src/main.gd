@@ -92,10 +92,29 @@ func _build_picker() -> void:
 	pick_name.size = Vector2(56, 10)
 	pick_name.position = Vector2(238, 133)
 	title.add_child(pick_name)
-	for side in [[-1, "<", 228], [1, ">", 298]]:
-		var arrow := Ui.label(side[1], 8, Color("#7d70a0"))
-		arrow.position = Vector2(side[2], 108)
+	# Tap / click targets: the arrows step through the choices, tapping the portrait goes to the next
+	# one. Phones have no keys on the title screen (the touch pad only exists in game).
+	for side in [[-1, "<", 222], [1, ">", 294]]:
+		var arrow := Button.new()
+		arrow.text = side[1]
+		arrow.flat = true
+		arrow.focus_mode = Control.FOCUS_NONE  # keep keyboard focus on the menu
+		arrow.add_theme_font_override("font", Ui.font())
+		arrow.add_theme_font_size_override("font_size", 8)
+		arrow.add_theme_color_override("font_color", Color("#7d70a0"))
+		arrow.add_theme_color_override("font_hover_color", Color("#ffb347"))
+		arrow.add_theme_color_override("font_pressed_color", Color("#ffb347"))
+		arrow.position = Vector2(side[2], 98)
+		arrow.size = Vector2(16, 28)
+		arrow.pressed.connect(_step_pick.bind(side[0]))
 		title.add_child(arrow)
+	var tap := Button.new()
+	tap.flat = true
+	tap.focus_mode = Control.FOCUS_NONE
+	tap.position = frame.position
+	tap.size = frame.size
+	tap.pressed.connect(_step_pick.bind(1))
+	title.add_child(tap)
 	_refresh_picks()
 	if not Bridge.look_loaded.is_connected(_on_look_loaded):
 		Bridge.look_loaded.connect(_on_look_loaded)
@@ -145,10 +164,15 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("right"):
 		step = 1
 	if step != 0:
-		pick = (pick + step + picks.size()) % picks.size()
-		_show_pick()
-		Sfx.play("swing")
+		_step_pick(step)
 		get_viewport().set_input_as_handled()
+
+func _step_pick(step: int) -> void:
+	if picks.is_empty():
+		return
+	pick = (pick + step + picks.size()) % picks.size()
+	_show_pick()
+	Sfx.play("swing")
 
 func _menu_button(box: VBoxContainer, text: String, on: Callable) -> Button:
 	var b := Button.new()
