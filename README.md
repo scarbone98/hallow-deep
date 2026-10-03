@@ -50,7 +50,7 @@ godot --headless --path . -s tools/avatar_sheet.gd  # shots/avatars.png: every o
 
 ## Build and screenshots
 
-`tools/build_web.sh` exports to `build/web`. Serve it (`python3 -m http.server
+`tools/build_web.sh` exports to `build/web`; `tools/publish_pages.sh` publishes it to GitHub Pages (https://scarbone98.github.io/hallow-deep/). Serve it (`python3 -m http.server
 8793` in build/web) and run `tools/shot.mjs` from a folder with playwright.
 
 ## Art
