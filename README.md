@@ -35,6 +35,20 @@ generated: head and body parts bob, and ground parts (legs, trousers, shoes)
 are split into near and far legs that stride. Guests are one of the four kids.
 Re-run the sync after new avatar items ship.
 
+## The four kids
+
+Alex, Joe, Jon and Matt are playable characters with full animation sets
+(idle, run, jump/fall/land, double jump, a 3-hit sword combo, up and down
+slashes, air swing, hurt, death, plus blended transition clips between them).
+They're 3D-rendered pixel art from the spritechar pipeline (`~/tools/sprite3d`,
+profile `hallow-deep`); `tools/sync_kids.sh` copies the sheets into
+`assets/kids/`. Pick one on the title screen (left / right), or play as your
+own avatar when the arcade has sent your look. `?outfit=joe` forces a kid.
+
+`node tools/kid_test.mjs <kid>` plays a scripted run with `?trace=1` (every
+animation frame logged to `window.__hdTrace`) and checks each state and
+transition actually played.
+
 ## Checks
 
 ```

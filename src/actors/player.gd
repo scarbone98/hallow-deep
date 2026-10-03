@@ -36,6 +36,17 @@ var hurt_t := 0.0
 var safe_pos := Vector2.ZERO  # last solid footing, for hazard respawns
 var frozen := false  # cutscenes and dialogue
 var dead := false
+# The four kids use full 3D-rendered sheets (KidSprites) instead of the layered avatar.
+var kid := ""
+var combo := 0      # which hit of the sword combo the current swing is (1..3)
+var combo_t := 0.0  # time left to chain the next hit
+var land_t := 0.0   # landing pose after a real drop
+var flap_t := 0.0   # double-jump pose after a bat-wing flap
+var air_vy := 0.0   # fall speed just before touching down
+var kid_target := ""  # state animation to play once a transition clip finishes
+var swing_anim := ""  # the attack animation chosen when the swing started (kept until it ends)
+var trace := false     # ?trace=1 on the web: log every animation frame to window.__hdTrace (tests)
+var trace_t := 0.0
 
 func _ready() -> void:
 	collision_layer = 2
@@ -74,6 +85,9 @@ func _ready() -> void:
 	safe_pos = global_position
 
 func set_look(look: Dictionary) -> void:
+	# A kid picked on the title screen stays picked, even when the page's avatar look arrives later.
+	if Game.character in KidSprites.KIDS and not Bridge.flags().has("outfit"):
+		look = KidSprites.look_for(Game.character)
 	if look.is_empty():
 		var f := Bridge.flags()
 		if f.has("outfit"):
@@ -82,8 +96,18 @@ func set_look(look: Dictionary) -> void:
 					look = AvatarBuilder.outfit_look(file)
 		if look.is_empty():
 			look = AvatarBuilder.guest_look()
-	sprite.sprite_frames = AvatarBuilder.build(look)
+	kid = KidSprites.kid_for(look)
+	if kid != "":
+		var k := KidSprites.build(kid)
+		sprite.sprite_frames = k.frames
+		sprite.offset = -k.pivot  # the sheets' pivot is the feet, like the player's origin
+	else:
+		sprite.sprite_frames = AvatarBuilder.build(look)
+		sprite.offset = Vector2(-16, -47)
 	sprite.play("idle")
+	trace = OS.has_feature("web") and Bridge.flags().has("trace")
+	if trace:
+		JavaScriptBridge.eval("window.__hdTrace = []")
 
 func rect() -> Rect2:
 	return Rect2(global_position - Vector2(BOX.x / 2.0, BOX.y), BOX)
@@ -94,6 +118,10 @@ func _physics_process(delta: float) -> void:
 	invuln = max(0.0, invuln - delta)
 	hurt_t = max(0.0, hurt_t - delta)
 	swing_cd = max(0.0, swing_cd - delta)
+	combo_t = max(0.0, combo_t - delta)
+	land_t = max(0.0, land_t - delta)
+	flap_t = max(0.0, flap_t - delta)
+	var was_on_floor := is_on_floor()
 	sprite.visible = invuln <= 0.0 or int(invuln * 20.0) % 2 == 0
 
 	var move := 0.0
@@ -129,12 +157,25 @@ func _physics_process(delta: float) -> void:
 		velocity.x = move_toward(velocity.x, move * RUN, ACCEL * delta)
 		if move != 0.0 and swing_t <= 0.0:
 			facing = 1 if move > 0.0 else -1
+	if not was_on_floor:
+		air_vy = velocity.y
 	move_and_slide()
+	if is_on_floor() and not was_on_floor and air_vy > 140.0:
+		land_t = 0.18
+		if kid != "" and sprite.sprite_frames.has_animation("jump_land"):
+			# play the whole landing clip: its transition clips start from its last frame
+			var sf := sprite.sprite_frames
+			land_t = sf.get_frame_count("jump_land") / sf.get_animation_speed("jump_land")
 
 	if not frozen and Input.is_action_just_pressed("attack") and swing_cd <= 0.0:
 		_swing()
 	_update_swing(delta)
 	_animate()
+	if trace:
+		trace_t += delta
+		JavaScriptBridge.eval("window.__hdTrace.push(%s)" % JSON.stringify({
+			"t": snappedf(trace_t, 0.001), "anim": str(sprite.animation), "frame": sprite.frame,
+			"floor": is_on_floor(), "vx": int(velocity.x), "vy": int(velocity.y), "swing": swing_t > 0.0}))
 	if is_on_floor() and not world.hazard_under(self) and world.hazard_in(rect().grow(6)) == "":
 		safe_pos = global_position
 
@@ -144,6 +185,7 @@ func _jump(v: float) -> void:
 	buffer = 0.0
 
 func _flap() -> void:
+	flap_t = 0.35
 	wings.visible = true
 	wings.frame = 0
 	wings.play("default")
@@ -178,7 +220,32 @@ func _swing() -> void:
 			sword.rotation = 0.0
 			sword.flip_h = facing < 0
 			sword.position = Vector2(14 * facing, -14)
+	if kid != "":
+		# the kid's own animation swings the sword; the overlay would be a second one
+		sword.visible = false
+		combo = combo % 3 + 1 if combo_t > 0.0 else 1
+		combo_t = SWING_TIME + 0.35
+		swing_anim = _have([_attack_anim(), "sword_1", "swing"])
+		kid_target = ""
+		sprite.play(swing_anim)
+		sprite.frame = 0
 	Sfx.play("swing")
+
+func _attack_anim() -> String:
+	if swing_dir == Vector2.UP:
+		return "slash_up"
+	if swing_dir == Vector2.DOWN:
+		return "slash_down"
+	if not is_on_floor():
+		return "air_attack"
+	return "sword_%d" % combo
+
+## The first animation in `names` the kid's sheet has.
+func _have(names: Array) -> String:
+	for n in names:
+		if sprite.sprite_frames.has_animation(n):
+			return n
+	return "idle"
 
 func swing_rect() -> Rect2:
 	var p := global_position
@@ -215,6 +282,9 @@ func _update_swing(delta: float) -> void:
 func _animate() -> void:
 	sprite.flip_h = facing < 0
 	wings.flip_h = facing < 0
+	if kid != "":
+		_animate_kid()
+		return
 	var anim := "idle"
 	if hurt_t > 0.0:
 		anim = "hurt"
@@ -223,6 +293,54 @@ func _animate() -> void:
 	elif absf(velocity.x) > 10.0:
 		anim = "run"
 	if sprite.animation != anim:
+		sprite.play(anim)
+
+func _animate_kid() -> void:
+	var anim: String
+	if dead:
+		anim = _have(["death", "dying"])
+	elif hurt_t > 0.0:
+		anim = _have(["hurt"])
+	elif swing_t > 0.0:
+		anim = swing_anim  # landing mid air-swing must not swap it for a ground swing
+	elif not is_on_floor():
+		if flap_t > 0.0:
+			anim = _have(["double_jump", "jump"])
+		elif velocity.y < 0.0:
+			anim = _have(["jump"])
+		else:
+			anim = _have(["fall", "jump_fall"])
+	elif land_t > 0.0:
+		anim = _have(["jump_land", "land"])
+	elif absf(velocity.x) > 10.0:
+		anim = _have(["run", "walk"])
+	else:
+		anim = _have(["idle"])
+	_play_kid(anim)
+
+## Switch the kid's animation, through a baked transition clip when the sheet has one:
+## "<from>-to-<to>" (from a one-shot) or "<from>-to-<to>-<frame>" (leaving a loop on that frame).
+## The game logic never waits on it: a new state request just replaces it.
+func _play_kid(anim: String) -> void:
+	var cur := sprite.animation
+	if kid_target != "":
+		if anim == kid_target and sprite.is_playing():
+			return  # still easing into it
+		if anim == kid_target:
+			kid_target = ""
+			sprite.play(anim)
+			return
+		kid_target = ""
+	if cur == anim:
+		return
+	var sf := sprite.sprite_frames
+	var via := "%s-to-%s" % [cur, anim]
+	if sf.get_animation_loop(cur) and sf.has_animation("%s-%d" % [via, sprite.frame]):
+		via = "%s-%d" % [via, sprite.frame]
+	if sf.has_animation(via):
+		kid_target = anim
+		sprite.play(via)
+	else:
 		sprite.play(anim)
 
 ## Hurt by something at world x `from_x`. Returns false while invulnerable.
@@ -238,6 +356,7 @@ func hurt(n: int, from_x: float) -> bool:
 	Sfx.play("hurt")
 	if Game.hp <= 0:
 		dead = true
+		_animate()  # kids fall down (death) before the world takes over
 		died.emit()
 	return true
 

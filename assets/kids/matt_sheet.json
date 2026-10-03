@@ -1,0 +1,418 @@
+{
+  "frameWidth": 48,
+  "frameHeight": 40,
+  "pivot": [
+    24,
+    37
+  ],
+  "animations": {
+    "air_attack": {
+      "row": 0,
+      "frames": 6,
+      "fps": 21.43,
+      "loop": false
+    },
+    "backstep": {
+      "row": 1,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "block": {
+      "row": 2,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "bow": {
+      "row": 3,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "cast": {
+      "row": 4,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "chop": {
+      "row": 5,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "climb": {
+      "row": 6,
+      "frames": 10,
+      "fps": 12,
+      "loop": true
+    },
+    "crouch": {
+      "row": 7,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "death": {
+      "row": 8,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "dive_attack": {
+      "row": 9,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "dodge": {
+      "row": 10,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "double_jump": {
+      "row": 11,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "fall": {
+      "row": 12,
+      "frames": 10,
+      "fps": 12,
+      "loop": true
+    },
+    "heal": {
+      "row": 13,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "heavy": {
+      "row": 14,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "hurt-to-idle": {
+      "row": 15,
+      "frames": 3,
+      "fps": 12,
+      "loop": false
+    },
+    "hurt": {
+      "row": 16,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "idle-to-run-0": {
+      "row": 17,
+      "frames": 2,
+      "fps": 12,
+      "loop": false
+    },
+    "idle-to-run-1": {
+      "row": 18,
+      "frames": 2,
+      "fps": 12,
+      "loop": false
+    },
+    "idle-to-run-2": {
+      "row": 19,
+      "frames": 2,
+      "fps": 12,
+      "loop": false
+    },
+    "idle-to-run-3": {
+      "row": 20,
+      "frames": 2,
+      "fps": 12,
+      "loop": false
+    },
+    "idle-to-run-4": {
+      "row": 21,
+      "frames": 2,
+      "fps": 12,
+      "loop": false
+    },
+    "idle-to-run-5": {
+      "row": 22,
+      "frames": 2,
+      "fps": 12,
+      "loop": false
+    },
+    "idle-to-run-6": {
+      "row": 23,
+      "frames": 2,
+      "fps": 12,
+      "loop": false
+    },
+    "idle-to-run-7": {
+      "row": 24,
+      "frames": 2,
+      "fps": 12,
+      "loop": false
+    },
+    "idle-to-run-8": {
+      "row": 25,
+      "frames": 2,
+      "fps": 12,
+      "loop": false
+    },
+    "idle-to-run-9": {
+      "row": 26,
+      "frames": 2,
+      "fps": 12,
+      "loop": false
+    },
+    "idle": {
+      "row": 27,
+      "frames": 10,
+      "fps": 12,
+      "loop": true
+    },
+    "interact": {
+      "row": 28,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "jump": {
+      "row": 29,
+      "frames": 4,
+      "fps": 12,
+      "loop": false
+    },
+    "jump_fall": {
+      "row": 30,
+      "frames": 4,
+      "fps": 12,
+      "loop": false
+    },
+    "jump_land-to-idle": {
+      "row": 31,
+      "frames": 2,
+      "fps": 12,
+      "loop": false
+    },
+    "jump_land-to-run": {
+      "row": 32,
+      "frames": 2,
+      "fps": 12,
+      "loop": false
+    },
+    "jump_land": {
+      "row": 33,
+      "frames": 4,
+      "fps": 12,
+      "loop": false
+    },
+    "knockback": {
+      "row": 34,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "land": {
+      "row": 35,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "ledge_climb": {
+      "row": 36,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "parry": {
+      "row": 37,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "pickup": {
+      "row": 38,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "punch": {
+      "row": 39,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "revive": {
+      "row": 40,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "roll": {
+      "row": 41,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "run-to-idle-0": {
+      "row": 42,
+      "frames": 3,
+      "fps": 12,
+      "loop": false
+    },
+    "run-to-idle-1": {
+      "row": 43,
+      "frames": 3,
+      "fps": 12,
+      "loop": false
+    },
+    "run-to-idle-2": {
+      "row": 44,
+      "frames": 3,
+      "fps": 12,
+      "loop": false
+    },
+    "run-to-idle-3": {
+      "row": 45,
+      "frames": 3,
+      "fps": 12,
+      "loop": false
+    },
+    "run-to-idle-4": {
+      "row": 46,
+      "frames": 3,
+      "fps": 12,
+      "loop": false
+    },
+    "run-to-idle-5": {
+      "row": 47,
+      "frames": 3,
+      "fps": 12,
+      "loop": false
+    },
+    "run-to-idle-6": {
+      "row": 48,
+      "frames": 3,
+      "fps": 12,
+      "loop": false
+    },
+    "run-to-idle-7": {
+      "row": 49,
+      "frames": 3,
+      "fps": 12,
+      "loop": false
+    },
+    "run-to-idle-8": {
+      "row": 50,
+      "frames": 3,
+      "fps": 12,
+      "loop": false
+    },
+    "run-to-idle-9": {
+      "row": 51,
+      "frames": 3,
+      "fps": 12,
+      "loop": false
+    },
+    "run": {
+      "row": 52,
+      "frames": 10,
+      "fps": 12,
+      "loop": true
+    },
+    "slash_down": {
+      "row": 53,
+      "frames": 6,
+      "fps": 21.43,
+      "loop": false
+    },
+    "slash_up-to-idle": {
+      "row": 54,
+      "frames": 3,
+      "fps": 12,
+      "loop": false
+    },
+    "slash_up": {
+      "row": 55,
+      "frames": 6,
+      "fps": 21.43,
+      "loop": false
+    },
+    "stab": {
+      "row": 56,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "swing": {
+      "row": 57,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "sword_1-to-idle": {
+      "row": 58,
+      "frames": 3,
+      "fps": 12,
+      "loop": false
+    },
+    "sword_1": {
+      "row": 59,
+      "frames": 6,
+      "fps": 21.43,
+      "loop": false
+    },
+    "sword_2-to-idle": {
+      "row": 60,
+      "frames": 3,
+      "fps": 12,
+      "loop": false
+    },
+    "sword_2": {
+      "row": 61,
+      "frames": 6,
+      "fps": 21.43,
+      "loop": false
+    },
+    "sword_3-to-idle": {
+      "row": 62,
+      "frames": 3,
+      "fps": 12,
+      "loop": false
+    },
+    "sword_3": {
+      "row": 63,
+      "frames": 6,
+      "fps": 21.43,
+      "loop": false
+    },
+    "throw": {
+      "row": 64,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "thrust": {
+      "row": 65,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "victory": {
+      "row": 66,
+      "frames": 10,
+      "fps": 12,
+      "loop": false
+    },
+    "walk": {
+      "row": 67,
+      "frames": 10,
+      "fps": 12,
+      "loop": true
+    }
+  }
+}

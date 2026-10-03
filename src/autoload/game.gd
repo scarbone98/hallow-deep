@@ -12,6 +12,7 @@ signal changed  # hp, candy or abilities moved; the HUD redraws
 
 var hp := 5
 var max_hp := 5
+var character := ""  # "you" (your avatar), a kid ("alex", "joe", "jon", "matt") or "" (not picked yet)
 var candy := 0
 var abilities := {}  # "double_jump": true
 var taken := {}  # pickups and broken blocks, by "<room>:<x>,<y>"
@@ -127,6 +128,7 @@ func save_game() -> void:
 		"v": 1, "max_hp": max_hp, "candy": candy, "abilities": abilities, "taken": taken,
 		"flags": flags, "visited": visited, "save_room": save_room,
 		"save_pos": [save_pos.x, save_pos.y], "deaths": deaths, "play_time": play_time,
+		"character": character,
 	}
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if f:
@@ -153,3 +155,4 @@ func load_game() -> void:
 	save_pos = Vector2(p[0], p[1])
 	deaths = int(d.get("deaths", 0))
 	play_time = float(d.get("play_time", 0.0))
+	character = str(d.get("character", ""))

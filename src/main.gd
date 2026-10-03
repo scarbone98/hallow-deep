@@ -5,6 +5,12 @@ extends Node
 
 var world: World
 var title: CanvasLayer
+# Character select on the title screen: your avatar ("you", once the page has sent your look)
+# and the four kids. Left / right to choose.
+var picks: Array = []
+var pick := 0
+var pick_sprite: AnimatedSprite2D
+var pick_name: Label
 
 func _ready() -> void:
 	randomize()
@@ -64,10 +70,81 @@ func _title() -> void:
 	keys.size = Vector2(300, 24)
 	keys.position = Vector2(10, 148)
 	title.add_child(keys)
+	_build_picker()
 	var t := name_l.create_tween().set_loops()
 	t.tween_property(name_l, "modulate", Color(1.3, 0.9, 0.9), 0.15)
 	t.tween_property(name_l, "modulate", Color.WHITE, 0.3)
 	t.tween_interval(0.9)
+
+func _build_picker() -> void:
+	var frame := Panel.new()
+	frame.add_theme_stylebox_override("panel", Ui.panel(Color(0.06, 0.03, 0.1, 0.6), Color(0.3, 0.24, 0.45)))
+	frame.position = Vector2(238, 82)
+	frame.size = Vector2(56, 62)
+	title.add_child(frame)
+	pick_sprite = AnimatedSprite2D.new()
+	pick_sprite.centered = false
+	pick_sprite.position = Vector2(266, 132)  # the feet
+	title.add_child(pick_sprite)
+	pick_name = Ui.label("", 8, Color("#ffb347"))
+	pick_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	pick_name.size = Vector2(56, 10)
+	pick_name.position = Vector2(238, 133)
+	title.add_child(pick_name)
+	for side in [[-1, "<", 228], [1, ">", 298]]:
+		var arrow := Ui.label(side[1], 8, Color("#7d70a0"))
+		arrow.position = Vector2(side[2], 108)
+		title.add_child(arrow)
+	_refresh_picks()
+	if not Bridge.look_loaded.is_connected(_on_look_loaded):
+		Bridge.look_loaded.connect(_on_look_loaded)
+
+## The choices: your avatar once the page has sent it, then the kids. Keeps the current choice.
+func _refresh_picks() -> void:
+	var current: String = picks[pick] if not picks.is_empty() else Game.character
+	picks = []
+	if not Bridge.look.is_empty():
+		picks.append("you")
+	picks.append_array(KidSprites.KIDS)
+	if current == "" or not current in picks:
+		current = "you" if "you" in picks else KidSprites.KIDS[randi() % KidSprites.KIDS.size()]
+	pick = picks.find(current)
+	_show_pick()
+
+func _on_look_loaded(_look: Dictionary) -> void:
+	if title:
+		if Game.character == "":
+			Game.character = "you"  # signed in and never chose: default to your own avatar
+		picks = []
+		_refresh_picks()
+
+func _show_pick() -> void:
+	var who: String = picks[pick]
+	if who == "you":
+		pick_sprite.sprite_frames = AvatarBuilder.build(Bridge.look)
+		pick_sprite.offset = Vector2(-16, -47)
+		pick_name.text = (Bridge.user_name if Bridge.user_name != "" else "YOU").to_upper()
+	else:
+		var k := KidSprites.build(who)
+		pick_sprite.sprite_frames = k.frames
+		pick_sprite.offset = -k.pivot
+		pick_name.text = who.to_upper()
+	pick_sprite.scale = Vector2(2, 2)  # avatar and kids stand about the same height in game
+	pick_sprite.play("idle")
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not title or picks.is_empty():
+		return
+	var step := 0
+	if event.is_action_pressed("left"):
+		step = -1
+	elif event.is_action_pressed("right"):
+		step = 1
+	if step != 0:
+		pick = (pick + step + picks.size()) % picks.size()
+		_show_pick()
+		Sfx.play("swing")
+		get_viewport().set_input_as_handled()
 
 func _menu_button(box: VBoxContainer, text: String, on: Callable) -> Button:
 	var b := Button.new()
@@ -89,6 +166,10 @@ func _new_game() -> void:
 	_enter("", true)
 
 func _enter(room: String, intro := false) -> void:
+	if title and not picks.is_empty():
+		Game.character = picks[pick]
+		if Game.has_save():
+			Game.save_game()
 	if title:
 		title.queue_free()
 		title = null
