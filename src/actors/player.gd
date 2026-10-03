@@ -175,7 +175,9 @@ func _physics_process(delta: float) -> void:
 		trace_t += delta
 		JavaScriptBridge.eval("window.__hdTrace.push(%s)" % JSON.stringify({
 			"t": snappedf(trace_t, 0.001), "anim": str(sprite.animation), "frame": sprite.frame,
-			"floor": is_on_floor(), "vx": int(velocity.x), "vy": int(velocity.y), "swing": swing_t > 0.0}))
+			"floor": is_on_floor(), "vx": int(velocity.x), "vy": int(velocity.y), "swing": swing_t > 0.0,
+			"sx": int(get_global_transform_with_canvas().origin.x),
+			"sy": int(get_global_transform_with_canvas().origin.y)}))
 	if is_on_floor() and not world.hazard_under(self) and world.hazard_in(rect().grow(6)) == "":
 		safe_pos = global_position
 
@@ -345,7 +347,7 @@ func _play_kid(anim: String) -> void:
 
 ## Hurt by something at world x `from_x`. Returns false while invulnerable.
 func hurt(n: int, from_x: float) -> bool:
-	if invuln > 0.0 or dead or frozen:
+	if invuln > 0.0 or dead or frozen or Bridge.flags().has("god"):  # ?god: attract / recording runs
 		return false
 	Game.hurt(n)
 	invuln = INVULN

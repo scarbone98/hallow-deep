@@ -1,7 +1,8 @@
 extends Node
 ## Title screen, the opening, then the caves.
 ## Dev flags: ?room=<id> starts there, ?give=double_jump, ?fresh ignores the
-## save, ?outfit=<name> wears a preview outfit, ?touch shows touch buttons.
+## save, ?outfit=<name> wears a preview outfit, ?touch shows touch buttons,
+## ?god ignores damage (for recording the cabinet video), ?trace=1 logs animation frames.
 
 var world: World
 var title: CanvasLayer
@@ -106,6 +107,9 @@ func _refresh_picks() -> void:
 	if not Bridge.look.is_empty():
 		picks.append("you")
 	picks.append_array(KidSprites.KIDS)
+	var f := Bridge.flags()
+	if f.has("outfit") and str(f.outfit) in picks:
+		current = str(f.outfit)  # ?outfit=joe also picks Joe on the title screen
 	if current == "" or not current in picks:
 		current = "you" if "you" in picks else KidSprites.KIDS[randi() % KidSprites.KIDS.size()]
 	pick = picks.find(current)
