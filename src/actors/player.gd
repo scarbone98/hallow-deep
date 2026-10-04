@@ -223,8 +223,8 @@ func _swing() -> void:
 			sword.flip_h = facing < 0
 			sword.position = Vector2(14 * facing, -14)
 	if kid != "":
-		# the kid's own animation swings the sword; the overlay would be a second one
-		sword.visible = false
+		# The game's sword effect stays on: it's drawn in the swing's direction and matches the
+		# hitbox, which the kids' generated attack animations don't make readable at 22px.
 		combo = combo % 3 + 1 if combo_t > 0.0 else 1
 		combo_t = SWING_TIME + 0.35
 		swing_anim = _have([_attack_anim(), "sword_1", "swing"])
