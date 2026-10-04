@@ -8,8 +8,8 @@
   "animations": {
     "air_attack": {
       "row": 0,
-      "frames": 6,
-      "fps": 21.43,
+      "frames": 4,
+      "fps": 14.29,
       "loop": false
     },
     "backstep": {
@@ -326,90 +326,72 @@
     },
     "slash_down": {
       "row": 53,
-      "frames": 6,
-      "fps": 21.43,
-      "loop": false
-    },
-    "slash_up-to-idle": {
-      "row": 54,
-      "frames": 3,
-      "fps": 12,
+      "frames": 4,
+      "fps": 14.29,
       "loop": false
     },
     "slash_up": {
-      "row": 55,
-      "frames": 6,
-      "fps": 21.43,
+      "row": 54,
+      "frames": 4,
+      "fps": 14.29,
       "loop": false
     },
     "stab": {
-      "row": 56,
+      "row": 55,
       "frames": 10,
       "fps": 12,
       "loop": false
     },
     "swing": {
-      "row": 57,
+      "row": 56,
       "frames": 10,
       "fps": 12,
       "loop": false
     },
-    "sword_1-to-idle": {
-      "row": 58,
-      "frames": 3,
-      "fps": 12,
+    "sword_1": {
+      "row": 57,
+      "frames": 4,
+      "fps": 14.29,
       "loop": false
     },
-    "sword_1": {
-      "row": 59,
+    "sword_1_keyed": {
+      "row": 58,
       "frames": 6,
       "fps": 21.43,
-      "loop": false
-    },
-    "sword_2-to-idle": {
-      "row": 60,
-      "frames": 3,
-      "fps": 12,
       "loop": false
     },
     "sword_2": {
-      "row": 61,
-      "frames": 6,
-      "fps": 21.43,
-      "loop": false
-    },
-    "sword_3-to-idle": {
-      "row": 62,
-      "frames": 3,
-      "fps": 12,
+      "row": 59,
+      "frames": 4,
+      "fps": 14.29,
       "loop": false
     },
     "sword_3": {
-      "row": 63,
-      "frames": 6,
-      "fps": 21.43,
+      "row": 60,
+      "frames": 4,
+      "fps": 14.29,
       "loop": false
     },
     "throw": {
-      "row": 64,
+      "row": 61,
       "frames": 10,
       "fps": 12,
       "loop": false
     },
     "thrust": {
-      "row": 65,
+      "row": 62,
       "frames": 10,
       "fps": 12,
       "loop": false
     },
     "victory": {
-      "row": 66,
+      "row": 63,
       "frames": 10,
       "fps": 12,
       "loop": false
     },
     "walk": {
-      "row": 67,
+      "row": 64,
       "frames": 10,
       "fps": 12,
       "loop": true
